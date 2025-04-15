@@ -1,0 +1,43 @@
+name: cml-flow
+on: [push]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    container: ghcr.io/iterative/cml:0-dvc2-base1
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: iterative/setup-cml@v1
+
+      - name: Pull data with DVC
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          pip install dvc==2.58.2
+          dvc gc --workspace -f  # Add -f to bypass confirmation prompt
+          dvc pull -v
+
+
+      - name: Train model
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install -r requirements.txt
+          python train.py
+
+          echo "## MODEL METRICS" > report.md
+          cat metrics.txt >> report.md
+
+          echo "## Data viz" >> report.md
+          cml-publish feature_importance.png --md >> report.md
+          cml-publish residuals.png --md >> report.md
+
+          cml-send-comment report.md
+
+      # Optional cleanup
+      - name: Cleanup workspace (optional)
+        run: |
+          dvc gc --workspace
