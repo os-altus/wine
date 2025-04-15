@@ -16,6 +16,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
+          pip install dvc==2.58.2
+          dvc gc --workspace
           dvc pull -v
 
       - name: Train model
