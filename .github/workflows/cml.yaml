@@ -17,8 +17,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           pip install dvc==2.58.2
-          dvc gc --workspace
+          dvc gc --workspace -f  # Add -f to bypass confirmation prompt
           dvc pull -v
+
 
       - name: Train model
         env:
