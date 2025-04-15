@@ -18,10 +18,6 @@ jobs:
         run: |
           dvc pull -v
 
-      - name: Pull data with DVC
-        run: |
-          dvc pull -v
-
       - name: Train model
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
