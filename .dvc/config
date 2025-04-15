@@ -1,0 +1,6 @@
+[core]
+    remote = myremote
+['remote "dataremote"']
+    url = gdrive://1bkk5CN9e7A6EOrr-U78_wQKPduxsst2A
+['remote "myremote"']
+    url = s3://dvc-bucket-mlflow
